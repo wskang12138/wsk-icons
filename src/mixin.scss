@@ -1,0 +1,28 @@
+$thumb-color: rgba(0, 0 ,0, .14);
+$track-color: #f5f5f5;
+
+@mixin webkit-scrollbar {
+  // firefox
+  scrollbar-width: thin;
+  scrollbar-color: $thumb-color $track-color;
+  // chrome
+  &::-webkit-scrollbar {
+    background: transparent;
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-corner {
+    width: 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-clip: content-box;
+    background-color: $thumb-color;
+    border: 1px solid transparent;
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $track-color;
+  }
+}

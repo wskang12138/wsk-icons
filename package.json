@@ -1,0 +1,72 @@
+{
+  "name": "wsk-icons",
+  "homepage": "",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/wsk-icons.umd.js",
+  "module": "./dist/wsk-icons.es.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/wsk-icons.es.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/wsk-icons.umd.js"
+      }
+    }
+  },
+  "types": "dist/index.d.ts",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "author": "",
+  "scripts": {
+    "rollup": "rollup -c",
+    "build-svg": "rimraf ./src/optimizedSvg/ && node ./scripts/build-svg.js",
+    "build-svg-react": "rimraf ./src/ReactIcons/ && node ./scripts/build-svg-react.js",
+    "build-svg-vue": "rimraf ./src/VueIcons/ && node ./scripts/build-svg-vue.js",
+    "build": "tsc && vite build && npm run rollup",
+    "dev": "vite --config vite.deploy.ts",
+    "deploy": "vite build --config vite.deploy.ts",
+    "preview": "vite preview --config vite.deploy.ts",
+    "lib": "vite build --config vite.lib.ts",
+    "release": "standard-version",
+    "svg-toolkit": "node ./lib/index.js ./rawSvg",
+    "svg-toolkit:vue": " node ./lib/index.js vue ./rawSvg ./testVue",
+    "svg-toolkit:react": "node ./lib/index.js react ./rawSvg ./testReact",
+    "svg-toolkit:help": "node ./lib/index.js --help"
+  },
+  "dependencies": {
+    "@svgr/plugin-jsx": "^8.1.0",
+    "commander": "^8.3.0",
+    "fast-glob": "^3.3.2",
+    "glob": "^11.0.0",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-prettier": "^8.1.0",
+    "@types/node": "^22.5.1",
+    "@types/react": "^18.3.4",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.21.1",
+    "rollup-plugin-dts": "^6.1.1",
+    "sass": "^1.77.8",
+    "standard-version": "^9.5.0",
+    "svgo": "^3.3.2",
+    "typescript": "^5.5.4",
+    "vite": "^5.2.2",
+    "vite-plugin-dts": "^4.0.3"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

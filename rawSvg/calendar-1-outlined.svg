@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <g id="日历图标" transform="translate(-240 -2944)">
+    <path id="calendar" d="M14.667,16H1.333A1.309,1.309,0,0,1,0,14.72V3.2A1.309,1.309,0,0,1,1.333,1.92H4V0H5.333V1.92h5.334V0H12V1.92h2.666A1.309,1.309,0,0,1,16,3.2V14.72A1.309,1.309,0,0,1,14.667,16ZM1.333,7.04v7.68H14.667V7.04Zm0-3.84V5.76H14.667V3.2H12V4.48H10.667V3.2H5.333V4.48H4V3.2Z" transform="translate(240 2944)" fill="gray"/>
+    <rect id="矩形_532" data-name="矩形 532" width="16" height="16" transform="translate(240 2944)" fill="none"/>
+  </g>
+</svg>

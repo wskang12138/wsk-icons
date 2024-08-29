@@ -1,0 +1,33 @@
+{
+  "name": "svg-toolkit",
+  "version": "0.1.0",
+  "description": "A toolkit for optimizing SVG and generating components",
+  "main": "./dist/index.js",
+  "bin": {
+    "svg-toolkit": "./dist/index.js"
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
+    "@svgr/plugin-prettier": "^8.1.0",
+    "@types/node": "^22.5.1",
+    "commander": "^8.3.0",
+    "fast-glob": "^3.3.2",
+    "glob": "^11.0.0",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@types/prettier": "^3.0.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
+  "author": "",
+  "license": "MIT"
+}
