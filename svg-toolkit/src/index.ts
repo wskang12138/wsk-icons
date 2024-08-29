@@ -9,9 +9,85 @@ import camelCase from 'camelcase';
 import { fileURLToPath } from 'url';
 import fg from 'fast-glob';
 import sharp from 'sharp';
-import svgoConfig from '../svgo.config';
-import svgoRawConfig from '../svgo.raw.config';
 
+const svgoRawConfig = {
+  js2svg: {
+    indent: 2, // string with spaces or number of spaces. 4 by default
+    pretty: true, // boolean, false by default
+  },
+  plugins: [
+    {
+      name: 'preset-default',
+      params: {
+        overrides: {
+          removeViewBox: false,
+          inlineStyles: {
+            onlyMatchedOnce: false,
+          },
+        },
+      },
+    },
+    'removeXMLNS',
+    'convertStyleToAttrs',
+    {
+      name: 'removeAttrs',
+      params: { attrs: ['svg:width', 'svg:height'] }
+    },
+    {
+      name: 'addAttributesToSVGElement',
+      params: {
+        attributes: [{
+          width: '1em',
+          height: '1em',
+          'aria-hidden': true,
+          focusable: 'false',
+        }]
+      }
+    }
+  ],
+}
+
+const svgoConfig = {
+  js2svg: {
+    indent: 2, // string with spaces or number of spaces. 4 by default
+    pretty: true, // boolean, false by default
+  },
+  plugins: [
+    {
+      name: 'preset-default',
+      params: {
+        overrides: {
+          removeViewBox: false,
+          inlineStyles: {
+            onlyMatchedOnce: false,
+          },
+        },
+      },
+    },
+    'removeXMLNS',
+    'convertStyleToAttrs',
+    {
+      name: 'convertColors',
+      params: { currentColor: /^(?!url|none)./ },
+    },
+    {
+      name: 'removeAttrs',
+      params: { attrs: ['opacity', 'svg:width', 'svg:height'] }
+    },
+    {
+      name: 'addAttributesToSVGElement',
+      params: {
+        attributes: [{
+          fill: 'currentColor',
+          width: '1em',
+          height: '1em',
+          'aria-hidden': true,
+          focusable: 'false',
+        }]
+      }
+    }
+  ],
+}
 // 获取 __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

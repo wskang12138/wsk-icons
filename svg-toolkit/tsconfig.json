@@ -13,11 +13,11 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
     "declaration": true,
     "declarationDir": "types",
     "outDir": "dist",
-    "emitDeclarationOnly": true,
+    "rootDir": "./src",
+    "emitDeclarationOnly": false,
     "typeRoots": ["./node_modules/@types"], // 确保包含了 @types 目录
     "types": ["node"] // 指定要包含的类型定义
   },
