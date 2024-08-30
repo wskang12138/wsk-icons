@@ -115,7 +115,18 @@ Examples:
 };
 // 将路径中的反斜杠替换为正斜杠
 const normalizePath = (filePath) => filePath.replace(/\\/g, '/');
-// 处理 SVG 文件
+// 创建目录（如果不存在的话）
+const ensureDirectoryExists = (dirPath) => {
+    if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
+    }
+};
+// 处理文件名以添加 .copy 后缀
+const getOutputFilePath = (outputPath, fileName, extension) => {
+    const outputFilePath = path.resolve(outputPath, `${fileName}${extension}`);
+    // 如果文件已经存在，直接返回原路径；否则，添加 .copy 后缀
+    return fs.existsSync(outputFilePath) ? path.resolve(outputPath, `${fileName}.copy${extension}`) : outputFilePath;
+};
 async function processSvgFile(filePath, output, options) {
     const svgContent = fs.readFileSync(filePath, 'utf-8');
     const fileName = path.basename(filePath, '.svg');
@@ -124,16 +135,17 @@ async function processSvgFile(filePath, output, options) {
     const originalSize = Buffer.byteLength(svgContent, 'utf-8');
     // 选择优化配置
     const config = filePath.includes('-raw.svg') ? svgoRawConfig : svgoConfig;
+    const outputPath = output ? path.resolve(process.cwd(), output) : fileDir;
+    ensureDirectoryExists(outputPath);
     if (options.vue) {
         // 生成 Vue 组件
         const componentName = camelCase(fileName, { pascalCase: true });
         const vueCode = `
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" v-html="icon" />
+  <svg xmlns="http://www.w3.org/2000/svg" v-html="icon"></svg>
 </template>
 
 <script setup>
-import { ref } from 'vue';
 
 const icon = \`${svgContent}\`;
 </script>
@@ -145,8 +157,8 @@ svg {
 }
 </style>
     `;
-        const outputPath = output ? path.resolve(process.cwd(), output, `${componentName}.vue`) : path.resolve(fileDir, `${fileName}.copy.vue`);
-        fs.writeFileSync(outputPath, vueCode, 'utf-8');
+        const outputFilePath = getOutputFilePath(outputPath, fileName, '.vue');
+        fs.writeFileSync(outputFilePath, vueCode, 'utf-8');
         console.log(`Generated Vue component ${componentName}.vue`);
     }
     else if (options.react) {
@@ -157,17 +169,17 @@ svg {
             icon: true,
             typescript: false
         }, { componentName });
-        const outputPath = output ? path.resolve(process.cwd(), output, `${componentName}.tsx`) : path.resolve(fileDir, `${fileName}.copy.tsx`);
-        fs.writeFileSync(outputPath, jsxCode, 'utf-8');
+        const outputFilePath = getOutputFilePath(outputPath, fileName, '.tsx');
+        fs.writeFileSync(outputFilePath, jsxCode, 'utf-8');
         console.log(`Generated React component ${componentName}.tsx`);
     }
     else {
         // 默认优化 SVG 文件
         const result = optimize(svgContent, config);
         const optimizedSize = Buffer.byteLength(result.data, 'utf-8');
-        const outputPath = output ? path.resolve(process.cwd(), output, `${fileName}.copy.svg`) : path.resolve(fileDir, `${fileName}.copy.svg`);
-        fs.writeFileSync(outputPath, result.data, 'utf-8');
-        console.log(`Optimized ${path.basename(filePath)} -> ${outputPath}`);
+        const outputFilePath = getOutputFilePath(outputPath, fileName, '.svg');
+        fs.writeFileSync(outputFilePath, result.data, 'utf-8');
+        console.log(`Optimized ${path.basename(filePath)} -> ${path.basename(outputFilePath)}`);
         console.log(`Original Size: ${originalSize} bytes`);
         console.log(`Optimized Size: ${optimizedSize} bytes`);
     }
@@ -179,19 +191,27 @@ async function processImageFile(filePath, output) {
     const originalBuffer = fs.readFileSync(filePath);
     // 计算原始文件大小
     const originalSize = Buffer.byteLength(originalBuffer);
-    let outputPath;
+    // 生成输出目录路径
+    const outputDir = output ? path.resolve(process.cwd(), output) : fileDir;
+    ensureDirectoryExists(outputDir); // 确保输出目录存在
+    // 生成输出文件路径
+    const extname = path.extname(filePath);
+    let outputPath = path.resolve(outputDir, `${fileName}${extname}`);
+    // 检查输出路径是否已存在
+    if (fs.existsSync(outputPath)) {
+        outputPath = path.resolve(outputDir, `${fileName}.copy${extname}`);
+    }
+    // 计算优化后的文件缓冲区
     const optimizedBuffer = await sharp(originalBuffer)
         .resize({ withoutEnlargement: true }) // 根据需要调整大小
-        .toBuffer()
-        .then(buffer => {
-        const newSize = Buffer.byteLength(buffer);
-        outputPath = output ? path.resolve(process.cwd(), output, `${fileName}.copy${path.extname(filePath)}`) : path.resolve(fileDir, `${fileName}.copy${path.extname(filePath)}`);
-        fs.writeFileSync(outputPath, buffer);
-        console.log(`Optimized ${path.basename(filePath)} -> ${outputPath}`);
-        console.log(`Original Size: ${originalSize} bytes`);
-        console.log(`Optimized Size: ${newSize} bytes`);
-        return buffer;
-    });
+        .toBuffer();
+    // 写入优化后的文件
+    fs.writeFileSync(outputPath, optimizedBuffer);
+    // 打印优化信息
+    const newSize = Buffer.byteLength(optimizedBuffer);
+    console.log(`Optimized ${path.basename(filePath)} -> ${path.basename(outputPath)}`);
+    console.log(`Original Size: ${originalSize} bytes`);
+    console.log(`Optimized Size: ${newSize} bytes`);
 }
 // 主处理逻辑
 async function handleSvgToolkit(input, output = '', options) {
@@ -201,15 +221,22 @@ async function handleSvgToolkit(input, output = '', options) {
     // 打印调试信息
     console.log(`Resolved input path: ${resolvedInput}`);
     console.log(`Resolved output path: ${resolvedOutput}`);
-    // 检查是否为单个文件
+    // 获取文件扩展名
     const extname = path.extname(resolvedInput).toLowerCase();
     if (extname === '.svg' || extname === '.png' || extname === '.jpg' || extname === '.jpeg') {
+        // 处理单个文件
         if (fs.existsSync(resolvedInput)) {
-            if (extname === '.svg') {
-                await processSvgFile(resolvedInput, resolvedOutput, options);
+            try {
+                if (extname === '.svg') {
+                    await processSvgFile(resolvedInput, resolvedOutput, options);
+                }
+                else {
+                    await processImageFile(resolvedInput, resolvedOutput);
+                }
             }
-            else {
-                await processImageFile(resolvedInput, resolvedOutput);
+            catch (error) {
+                console.error(`Error processing file ${resolvedInput}: ${error.message}`);
+                process.exit(1);
             }
         }
         else {
@@ -220,7 +247,6 @@ async function handleSvgToolkit(input, output = '', options) {
     else {
         // 使用 fast-glob 进行模糊匹配
         try {
-            // 确保使用正确的模式匹配文件
             const svgPattern = `${resolvedInput}/**/*.svg`;
             const imagePattern = `${resolvedInput}/**/*.{png,jpg,jpeg}`;
             console.log(`Searching for SVG files with pattern: ${svgPattern}`);
@@ -233,16 +259,15 @@ async function handleSvgToolkit(input, output = '', options) {
                 console.error(`No files found matching ${resolvedInput}`);
                 process.exit(1);
             }
-            svgFiles.forEach(file => {
-                processSvgFile(file, resolvedOutput, options).catch(error => {
-                    console.error(`Error processing SVG file ${file}: ${error.message}`);
-                });
-            });
-            imageFiles.forEach(file => {
-                processImageFile(file, resolvedOutput).catch(error => {
-                    console.error(`Error processing image file ${file}: ${error.message}`);
-                });
-            });
+            // 并发处理文件
+            const svgPromises = svgFiles.map(file => processSvgFile(file, resolvedOutput, options).catch(error => {
+                console.error(`Error processing SVG file ${file}: ${error.message}`);
+            }));
+            const imagePromises = imageFiles.map(file => processImageFile(file, resolvedOutput).catch(error => {
+                console.error(`Error processing image file ${file}: ${error.message}`);
+            }));
+            // 等待所有文件处理完成
+            await Promise.all([...svgPromises, ...imagePromises]);
         }
         catch (err) {
             console.error(`Error: ${err.message}`);

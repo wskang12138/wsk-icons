@@ -1,6 +1,6 @@
 {
   "name": "wsk-svg-toolkit",
-  "version": "0.1.6",
+  "version": "1.0.0",
   "description": "A toolkit for optimizing SVG and generating components",
   "main": "./dist/index.js",
   "bin": {
@@ -9,7 +9,7 @@
   "type": "module",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "dev": "node ./dist te.png",
+    "dev": "node ./dist ./images --vue",
     "build": "tsc"
   },
   "dependencies": {
