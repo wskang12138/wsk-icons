@@ -8,10 +8,11 @@ import camelCase from 'camelcase';
 import { fileURLToPath } from 'url';
 import fg from 'fast-glob';
 import sharp from 'sharp';
+// SVGO 配置
 const svgoRawConfig = {
     js2svg: {
-        indent: 2, // string with spaces or number of spaces. 4 by default
-        pretty: true, // boolean, false by default
+        indent: 2,
+        pretty: true,
     },
     plugins: [
         {
@@ -46,8 +47,8 @@ const svgoRawConfig = {
 };
 const svgoConfig = {
     js2svg: {
-        indent: 2, // string with spaces or number of spaces. 4 by default
-        pretty: true, // boolean, false by default
+        indent: 2,
+        pretty: true,
     },
     plugins: [
         {
@@ -112,6 +113,8 @@ Examples:
   svg-toolkit ./rawImages ./optimizedImages
   `);
 };
+// 将路径中的反斜杠替换为正斜杠
+const normalizePath = (filePath) => filePath.replace(/\\/g, '/');
 // 处理 SVG 文件
 async function processSvgFile(filePath, output, options) {
     const svgContent = fs.readFileSync(filePath, 'utf-8');
@@ -193,40 +196,58 @@ async function processImageFile(filePath, output) {
 // 主处理逻辑
 async function handleSvgToolkit(input, output = '', options) {
     // 解析路径
-    const resolvedInput = path.resolve(process.cwd(), input);
-    const resolvedOutput = output ? path.resolve(process.cwd(), output) : '';
+    const resolvedInput = normalizePath(path.resolve(process.cwd(), input));
+    const resolvedOutput = output ? normalizePath(path.resolve(process.cwd(), output)) : '';
     // 打印调试信息
     console.log(`Resolved input path: ${resolvedInput}`);
     console.log(`Resolved output path: ${resolvedOutput}`);
-    // 使用 fast-glob 进行模糊匹配
-    try {
-        // 确保使用正确的模式匹配文件
-        const svgPattern = `${resolvedInput.replace(/\\/g, '/')}/**/*.svg`;
-        const imagePattern = `${resolvedInput.replace(/\\/g, '/')}/**/*.{png,jpg,jpeg}`;
-        console.log(`Searching for SVG files with pattern: ${svgPattern}`);
-        console.log(`Searching for image files with pattern: ${imagePattern}`);
-        const svgFiles = await fg(svgPattern, { onlyFiles: true, dot: true });
-        const imageFiles = await fg(imagePattern, { onlyFiles: true, dot: true });
-        console.log(`Found SVG files: ${svgFiles}`);
-        console.log(`Found image files: ${imageFiles}`);
-        if (svgFiles.length === 0 && imageFiles.length === 0) {
-            console.error(`No files found matching ${resolvedInput}`);
+    // 检查是否为单个文件
+    const extname = path.extname(resolvedInput).toLowerCase();
+    if (extname === '.svg' || extname === '.png' || extname === '.jpg' || extname === '.jpeg') {
+        if (fs.existsSync(resolvedInput)) {
+            if (extname === '.svg') {
+                await processSvgFile(resolvedInput, resolvedOutput, options);
+            }
+            else {
+                await processImageFile(resolvedInput, resolvedOutput);
+            }
+        }
+        else {
+            console.error(`File ${resolvedInput} does not exist.`);
             process.exit(1);
         }
-        svgFiles.forEach(file => {
-            processSvgFile(file, resolvedOutput, options).catch(error => {
-                console.error(`Error processing SVG file ${file}: ${error.message}`);
-            });
-        });
-        imageFiles.forEach(file => {
-            processImageFile(file, resolvedOutput).catch(error => {
-                console.error(`Error processing image file ${file}: ${error.message}`);
-            });
-        });
     }
-    catch (err) {
-        console.error(`Error: ${err.message}`);
-        process.exit(1);
+    else {
+        // 使用 fast-glob 进行模糊匹配
+        try {
+            // 确保使用正确的模式匹配文件
+            const svgPattern = `${resolvedInput}/**/*.svg`;
+            const imagePattern = `${resolvedInput}/**/*.{png,jpg,jpeg}`;
+            console.log(`Searching for SVG files with pattern: ${svgPattern}`);
+            console.log(`Searching for image files with pattern: ${imagePattern}`);
+            const svgFiles = await fg(svgPattern, { onlyFiles: true, dot: true });
+            const imageFiles = await fg(imagePattern, { onlyFiles: true, dot: true });
+            console.log(`Found SVG files: ${svgFiles}`);
+            console.log(`Found image files: ${imageFiles}`);
+            if (svgFiles.length === 0 && imageFiles.length === 0) {
+                console.error(`No files found matching ${resolvedInput}`);
+                process.exit(1);
+            }
+            svgFiles.forEach(file => {
+                processSvgFile(file, resolvedOutput, options).catch(error => {
+                    console.error(`Error processing SVG file ${file}: ${error.message}`);
+                });
+            });
+            imageFiles.forEach(file => {
+                processImageFile(file, resolvedOutput).catch(error => {
+                    console.error(`Error processing image file ${file}: ${error.message}`);
+                });
+            });
+        }
+        catch (err) {
+            console.error(`Error: ${err.message}`);
+            process.exit(1);
+        }
     }
 }
 // 定义默认命令
