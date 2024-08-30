@@ -10,7 +10,7 @@ This plugin is mainly used for optimizing SVG, PNG, and JPG images. If it is SVG
 
 ## Install
 ```bash
-npm install -g wsk-wsksvg
+npm install -g wsksvg
 ```
 
 ## Use
