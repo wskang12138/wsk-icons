@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
@@ -11,43 +9,6 @@ import fg from 'fast-glob';
 import sharp from 'sharp';
 
 // SVGO 配置
-const svgoRawConfig = {
-  js2svg: {
-    indent: 2,
-    pretty: true,
-  },
-  plugins: [
-    {
-      name: 'preset-default',
-      params: {
-        overrides: {
-          removeViewBox: false,
-          inlineStyles: {
-            onlyMatchedOnce: false,
-          },
-        },
-      },
-    },
-    'removeXMLNS',
-    'convertStyleToAttrs',
-    {
-      name: 'removeAttrs',
-      params: { attrs: ['svg:width', 'svg:height'] }
-    },
-    {
-      name: 'addAttributesToSVGElement',
-      params: {
-        attributes: [{
-          width: '1em',
-          height: '1em',
-          'aria-hidden': true,
-          focusable: 'false',
-        }]
-      }
-    }
-  ],
-};
-
 const svgoConfig = {
   js2svg: {
     indent: 2,
@@ -58,28 +19,29 @@ const svgoConfig = {
       name: 'preset-default',
       params: {
         overrides: {
-          removeViewBox: false,
+          removeViewBox: false, // 保持 viewBox
           inlineStyles: {
             onlyMatchedOnce: false,
           },
         },
       },
     },
-    'removeXMLNS',
-    'convertStyleToAttrs',
     {
-      name: 'convertColors',
-      params: { currentColor: /^(?!url|none)./ },
+      name: 'convertStyleToAttrs',
+      params: {
+        onlyMatchedOnce: false,
+      },
     },
     {
       name: 'removeAttrs',
-      params: { attrs: ['opacity', 'svg:width', 'svg:height'] }
+      params: {
+        attrs: ['svg:style'], // 可选：移除内联样式，但保留 width 和 height
+      },
     },
     {
       name: 'addAttributesToSVGElement',
       params: {
         attributes: [{
-          fill: 'currentColor',
           width: '1em',
           height: '1em',
           'aria-hidden': true,
@@ -100,7 +62,7 @@ const program = new Command();
 const displayHelp = () => {
   console.log(`
 Usage:
-  svg-toolkit <input> [output] [options]
+  wsksvg <input> [output] [options]
 
 Commands:
   <input>         The path to the SVG file or directory containing SVG files.
@@ -112,11 +74,11 @@ Options:
   -h, --help      Display this help message.
 
 Examples:
-  svg-toolkit ./rawSvg
-  svg-toolkit ./rawSvg ./testVue
-  svg-toolkit ./rawSvg ./testVue --vue
-  svg-toolkit ./rawSvg ./testReact --react
-  svg-toolkit ./rawImages ./optimizedImages
+  wsksvg ./rawSvg
+  wsksvg ./rawSvg ./testVue
+  wsksvg ./rawSvg ./testVue --vue
+  wsksvg ./rawSvg ./testReact --react
+  wsksvg ./rawImages ./optimizedImages
   `);
 };
 
@@ -146,7 +108,7 @@ async function processSvgFile(filePath: string, output: string, options: { vue: 
   const originalSize = Buffer.byteLength(svgContent, 'utf-8');
 
   // 选择优化配置
-  const config = filePath.includes('-raw.svg') ? svgoRawConfig : svgoConfig;
+  const config = svgoConfig;
 
   const outputPath = output ? path.resolve(process.cwd(), output) : fileDir;
   ensureDirectoryExists(outputPath);
@@ -234,75 +196,76 @@ async function processImageFile(filePath: string, output: string) {
   console.log(`Optimized Size: ${newSize} bytes`);
 }
 
-
-// 主处理逻辑
-async function handleSvgToolkit(input: string, output = '', options: { vue: any; react: any; }) {
-  // 解析路径
-  const resolvedInput = normalizePath(path.resolve(process.cwd(), input));
-  const resolvedOutput = output ? normalizePath(path.resolve(process.cwd(), output)) : '';
-
-  // 打印调试信息
-  console.log(`Resolved input path: ${resolvedInput}`);
-  console.log(`Resolved output path: ${resolvedOutput}`);
-
-  // 获取文件扩展名
-  const extname = path.extname(resolvedInput).toLowerCase();
-
+// 处理文件逻辑
+async function processFile(filePath: string, output: string, options: { vue: any; react: any; }) {
+  const extname = path.extname(filePath).toLowerCase();
+  
   if (extname === '.svg' || extname === '.png' || extname === '.jpg' || extname === '.jpeg') {
-    // 处理单个文件
-    if (fs.existsSync(resolvedInput)) {
-      try {
-        if (extname === '.svg') {
-          await processSvgFile(resolvedInput, resolvedOutput, options);
-        } else {
-          await processImageFile(resolvedInput, resolvedOutput);
-        }
-      } catch (error: any) {
-        console.error(`Error processing file ${resolvedInput}: ${error.message}`);
-        process.exit(1);
-      }
+    if (extname === '.svg') {
+      await processSvgFile(filePath, output, options);
     } else {
-      console.error(`File ${resolvedInput} does not exist.`);
-      process.exit(1);
+      await processImageFile(filePath, output);
     }
   } else {
-    // 使用 fast-glob 进行模糊匹配
-    try {
-      const svgPattern = `${resolvedInput}/**/*.svg`;
-      const imagePattern = `${resolvedInput}/**/*.{png,jpg,jpeg}`;
-
-      console.log(`Searching for SVG files with pattern: ${svgPattern}`);
-      console.log(`Searching for image files with pattern: ${imagePattern}`);
-
-      const svgFiles = await fg(svgPattern, { onlyFiles: true, dot: true });
-      const imageFiles = await fg(imagePattern, { onlyFiles: true, dot: true });
-
-      console.log(`Found SVG files: ${svgFiles}`);
-      console.log(`Found image files: ${imageFiles}`);
-
-      if (svgFiles.length === 0 && imageFiles.length === 0) {
-        console.error(`No files found matching ${resolvedInput}`);
-        process.exit(1);
-      }
-
-      // 并发处理文件
-      const svgPromises = svgFiles.map(file => processSvgFile(file, resolvedOutput, options).catch(error => {
-        console.error(`Error processing SVG file ${file}: ${error.message}`);
-      }));
-
-      const imagePromises = imageFiles.map(file => processImageFile(file, resolvedOutput).catch(error => {
-        console.error(`Error processing image file ${file}: ${error.message}`);
-      }));
-
-      // 等待所有文件处理完成
-      await Promise.all([...svgPromises, ...imagePromises]);
-
-    } catch (err: any) {
-      console.error(`Error: ${err.message}`);
-      process.exit(1);
-    }
+    console.error(`Unsupported file type: ${extname}`);
+    process.exit(1);
   }
 }
+
+// 处理输入路径
+async function handleSvgToolkit(input: string, output = '', options: { vue: any; react: any; }) {
+  const originalInput = normalizePath(path.resolve(process.cwd(), input));
+  const resolvedOutput = output ? normalizePath(path.resolve(process.cwd(), output)) : '';
+
+  console.log(`Resolved input path: ${originalInput}`);
+  console.log(`Resolved output path: ${resolvedOutput}`);
+
+  try {
+    if (fs.existsSync(originalInput)) {
+      const stats = fs.statSync(originalInput);
+
+      if (stats.isFile()) {
+        // 处理单个文件
+        await processFile(originalInput, resolvedOutput, options);
+        return;
+      }
+
+      if (stats.isDirectory()) {
+        // 处理目录下的所有匹配文件
+        const files = await fg(`${originalInput}/**/*.{svg,png,jpg,jpeg}`, { onlyFiles: true, dot: true });
+        if (files.length === 0) {
+          throw new Error(`No files found in directory ${originalInput}`);
+        }
+        for (const file of files) {
+          await processFile(file, resolvedOutput, options);
+        }
+        return;
+      }
+    }
+
+    // 输入路径不是文件也不是目录，尝试模糊匹配
+    const filePattern = `${path.dirname(originalInput)}/${path.basename(originalInput)}*.*`;
+    console.log(`Searching for files with pattern: ${filePattern}`);
+    const matchedFiles = await fg(filePattern, { onlyFiles: true, dot: true });
+
+    if (matchedFiles.length === 0) {
+      throw new Error(`No files found matching ${originalInput}`);
+    }
+
+    // 处理找到的文件
+    for (const file of matchedFiles) {
+      const stats = fs.statSync(file);
+      if (stats.isFile()) {
+        await processFile(file, resolvedOutput, options);
+      }
+    }
+
+  } catch (err: any) {
+    console.error(`Error: ${err.message}`);
+    process.exit(1);
+  }
+}
+
 // 定义默认命令
 program
   .description('Toolkit for optimizing SVG and other image files, and generating components')

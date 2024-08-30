@@ -5,9 +5,7 @@ import { version } from '../package.json'
 
 export default function App() {
   const alliconList = useMemo(() => Object.keys(allIcons), [])
-  const deprecatedIconList = useMemo(() => {
-    return alliconList.filter((iconName) => iconName.startsWith('Deprecated'))
-  }, [])
+
   const iconList = useMemo(() => {
     return alliconList.filter((iconName) => iconName.startsWith('Deprecated') === false)
   }, [])

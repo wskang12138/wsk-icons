@@ -117,7 +117,7 @@ c.dirname(D);
 const d = new A(), f = () => {
   console.log(`
 Usage:
-  svg-toolkit <input> [output] [options]
+  wsksvg <input> [output] [options]
 
 Commands:
   <input>         The path to the SVG file or directory containing SVG files.
@@ -129,11 +129,11 @@ Options:
   -h, --help      Display this help message.
 
 Examples:
-  svg-toolkit ./rawSvg
-  svg-toolkit ./rawSvg ./testVue
-  svg-toolkit ./rawSvg ./testVue --vue
-  svg-toolkit ./rawSvg ./testVue --react
-  svg-toolkit ./rawImages ./optimizedImages
+  wsksvg ./rawSvg
+  wsksvg ./rawSvg ./testVue
+  wsksvg ./rawSvg ./testVue --vue
+  wsksvg ./rawSvg ./testVue --react
+  wsksvg ./rawImages ./optimizedImages
   `);
 };
 async function j(e, t, s) {

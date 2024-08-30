@@ -10,13 +10,13 @@ This plugin is mainly used for optimizing SVG, PNG, and JPG images. If it is SVG
 
 ## Install
 ```bash
-npm install -g wsk-svg-toolkit
+npm install -g wsk-wsksvg
 ```
 
 ## Use
 ```bash
 Usage:
-  svg-toolkit <input> [output] [options]
+  wsksvg <input> [output] [options]
 
 Commands:
   <input>         The path to the SVG file or directory containing SVG files.
@@ -28,10 +28,10 @@ Options:
   -h, --help      Display this help message.
 
 Examples:
-  svg-toolkit ./rawSvg
-  svg-toolkit ./rawSvg ./test
-  svg-toolkit ./rawSvg ./testVue --vue
-  svg-toolkit ./rawSvg ./testReact --react
+  wsksvg ./rawSvg
+  wsksvg ./rawSvg ./test
+  wsksvg ./rawSvg ./testVue --vue
+  wsksvg ./rawSvg ./testReact --react
 
   ./rawSvg Input file path  ./test Output file path
 ```

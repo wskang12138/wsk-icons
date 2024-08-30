@@ -34,10 +34,10 @@
     "preview": "vite preview --config vite.deploy.ts",
     "lib": "vite build --config vite.lib.ts",
     "release": "standard-version",
-    "svg-toolkit": "node ./lib/index.js ./rawSvg",
-    "svg-toolkit:vue": " node ./lib/index.js vue ./rawSvg ./testVue",
-    "svg-toolkit:react": "node ./lib/index.js react ./rawSvg ./testReact",
-    "svg-toolkit:help": "node ./lib/index.js --help"
+    "wsksvg": "node ./lib/index.js ./rawSvg",
+    "wsksvg:vue": " node ./lib/index.js  ./rawSvg ./testVue",
+    "wsksvg:react": "node ./scripts/build-svg-react.js",
+    "wsksvg:help": "node ./lib/index.js --help"
   },
   "dependencies": {
     "@svgr/plugin-jsx": "^8.1.0",
@@ -45,7 +45,7 @@
     "fast-glob": "^3.3.2",
     "glob": "^11.0.0",
     "sharp": "^0.33.5",
-    "svg-toolkit": "^0.1.1"
+    "wsksvg": "^0.1.1"
   },
   "devDependencies": {
     "@svgr/core": "^8.1.0",

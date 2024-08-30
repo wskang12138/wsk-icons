@@ -8,7 +8,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'lib/index.js'),
       name: 'SvgToolkit',
-      fileName: (format) => `svg-toolkit.${format}.js`,
+      fileName: (format) => `wsksvg.${format}.js`,
       formats: ['es', 'cjs', 'umd'],
     },
     rollupOptions: {
