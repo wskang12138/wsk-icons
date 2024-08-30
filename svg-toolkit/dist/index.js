@@ -51,6 +51,47 @@ const svgoConfig = {
         }
     ],
 };
+const svgoComConfig = {
+    js2svg: {
+        indent: 2,
+        pretty: true,
+    },
+    plugins: [
+        {
+            name: 'preset-default',
+            params: {
+                overrides: {
+                    removeViewBox: false,
+                    inlineStyles: {
+                        onlyMatchedOnce: false,
+                    },
+                },
+            },
+        },
+        'removeXMLNS',
+        'convertStyleToAttrs',
+        {
+            name: 'convertColors',
+            params: {
+                attrs: ['svg:style'], // 可选：移除内联样式，但保留 width 和 height
+            },
+        },
+        {
+            name: 'removeAttrs',
+            params: { attrs: ['opacity'] }, // 移除不需要的 opacity 属性，但保留 width 和 height
+        },
+        {
+            name: 'addAttributesToSVGElement',
+            params: {
+                attributes: [{
+                        'aria-hidden': true,
+                        focusable: 'false',
+                        // 不设置 width 和 height，以保持原始大小
+                    }]
+            }
+        }
+    ],
+};
 // 获取 __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -99,12 +140,13 @@ async function processSvgFile(filePath, output, options) {
     // 计算原始文件大小
     const originalSize = Buffer.byteLength(svgContent, 'utf-8');
     // 选择优化配置
-    const config = svgoConfig;
+    let config = svgoConfig;
     const outputPath = output ? path.resolve(process.cwd(), output) : fileDir;
     ensureDirectoryExists(outputPath);
     if (options.vue) {
         // 生成 Vue 组件
         const componentName = camelCase(fileName, { pascalCase: true });
+        const result = optimize(svgContent, svgoComConfig);
         const vueCode = `
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" v-html="icon"></svg>
@@ -112,7 +154,7 @@ async function processSvgFile(filePath, output, options) {
 
 <script setup>
 
-const icon = \`${svgContent}\`;
+const icon = \`${result.data}\`;
 </script>
 
 <style scoped>
@@ -129,7 +171,8 @@ svg {
     else if (options.react) {
         // 生成 React 组件
         const componentName = camelCase(fileName, { pascalCase: true });
-        const jsxCode = await transform(svgContent, {
+        const result = optimize(svgContent, svgoComConfig);
+        const jsxCode = await transform(result.data, {
             plugins: ['@svgr/plugin-jsx', '@svgr/plugin-prettier'],
             icon: true,
             typescript: false
