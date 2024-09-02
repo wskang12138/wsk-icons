@@ -4,7 +4,9 @@
 
 ```bash
 
-This plugin is mainly used for optimizing SVG, PNG, and JPG images. If it is SVG, it can be converted into corresponding components through instructions, such as React and Vue components
+This plugin is mainly used for optimizing SVG, PNG, and JPG images. 
+If it is SVG, it can be converted into corresponding components through instructions, 
+such as React and Vue components
 
 ```
 
@@ -20,7 +22,8 @@ Usage:
 
 Commands:
   <input>         The path to the SVG file or directory containing SVG files.
-  [output]        The path to the output directory or file. If not specified, the output will be in the same directory with a ".copy" suffix.
+  [output]        The path to the output directory or file. If not specified, 
+                  the output will be in the same directory with a ".copy" suffix.
 
 Options:
   --vue           Generate Vue components from SVG files.
