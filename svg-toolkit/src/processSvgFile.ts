@@ -6,90 +6,29 @@ import camelCase from 'camelcase';
 import { ensureDirectoryExists, getOutputFilePath } from "./utils.js";
 import { Buffer } from 'buffer';
 // SVGO 配置
-const svgoConfig = {
-    js2svg: {
-        indent: 2,
-        pretty: true,
-    },
-    plugins: [
-        {
-            name: 'preset-default',
-            params: {
-                overrides: {
-                    removeViewBox: false, // 保持 viewBox
-                    inlineStyles: {
-                        onlyMatchedOnce: false,
-                    },
-                },
-            },
-        },
-        {
-            name: 'convertStyleToAttrs',
-            params: {
-                onlyMatchedOnce: false,
-            },
-        },
-        {
-            name: 'removeAttrs',
-            params: {
-                attrs: ['svg:style'], // 可选：移除内联样式，但保留 width 和 height
-            },
-        },
-        {
-            name: 'addAttributesToSVGElement',
-            params: {
-                attributes: [{
-                    width: '1em',
-                    height: '1em',
-                    'aria-hidden': true,
-                    focusable: 'false',
-                }]
-            }
-        }
-    ],
-};
+import { fileURLToPath } from 'url';
+// 获取当前模块的目录
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const svgoComConfig = {
-    js2svg: {
-        indent: 2,
-        pretty: true,
-    },
-    plugins: [
-        {
-            name: 'preset-default',
-            params: {
-                overrides: {
-                    removeViewBox: false,
-                    inlineStyles: {
-                        onlyMatchedOnce: false,
-                    },
-                },
-            },
-        },
-        'removeXMLNS',
-        'convertStyleToAttrs',
-        {
-            name: 'convertColors',
-            params: {
-                attrs: ['svg:style'], // 可选：移除内联样式，但保留 width 和 height
-            },
-        },
-        {
-            name: 'removeAttrs',
-            params: { attrs: ['opacity'] }, // 移除不需要的 opacity 属性，但保留 width 和 height
-        },
-        {
-            name: 'addAttributesToSVGElement',
-            params: {
-                attributes: [{
-                    'aria-hidden': true,
-                    focusable: 'false',
-                    // 不设置 width 和 height，以保持原始大小
-                }]
-            }
-        }
-    ],
+// 默认配置文件路径
+const defaultConfigPath = path.resolve(__dirname, 'wsksvg.json');
+// 加载默认配置
+const defaultConfig = JSON.parse(fs.readFileSync(defaultConfigPath, 'utf-8'));
+
+// 特定配置文件路径
+const specificConfigPath = path.resolve(__dirname, 'wsksvg.json');
+let config = { ...defaultConfig };
+
+// 合并特定配置与默认配置
+const mergeConfig = (defaultConfig: any, specificConfig: any) => {
+  return { ...defaultConfig, ...specificConfig };
 };
+// 如果存在特定配置文件，则加载并合并配置
+if (fs.existsSync(specificConfigPath)) {
+    const specificConfig = JSON.parse(fs.readFileSync(specificConfigPath, 'utf-8'));  
+    config = mergeConfig(defaultConfig, specificConfig);
+}
 
 export async function processSvgFile(filePath: string, output: string, options: { vue: any; react: any; base: boolean; }) {
     const svgContent = fs.readFileSync(filePath, 'utf-8');
@@ -98,10 +37,6 @@ export async function processSvgFile(filePath: string, output: string, options: 
   
     // 计算原始文件大小
     const originalSize = Buffer.byteLength(svgContent, 'utf-8');
-  
-    // 选择优化配置
-    let config = svgoConfig;
-  
     // 生成输出路径
     const outputPath = output ? path.resolve(process.cwd(), output) : fileDir;
     ensureDirectoryExists(outputPath);
@@ -118,7 +53,7 @@ export async function processSvgFile(filePath: string, output: string, options: 
     } else if (options.vue) {
       // 生成Vue组件
       const componentName = camelCase(fileName, { pascalCase: true });
-      const result = optimize(svgContent, svgoComConfig as any);
+      const result = optimize(svgContent,config?.svgo as any);
       const vueCode = `
   <template>
     <svg xmlns="http://www.w3.org/2000/svg" v-html="icon"></svg>
@@ -142,7 +77,7 @@ export async function processSvgFile(filePath: string, output: string, options: 
     } else if (options.react) {
       // 生成React组件
       const componentName = camelCase(fileName, { pascalCase: true });
-      const result = optimize(svgContent, svgoComConfig as any);
+      const result = optimize(svgContent,config?.svgo as any);
       const jsxCode = await transform(result.data, {
         plugins: ['@svgr/plugin-jsx', '@svgr/plugin-prettier'],
         icon: true,
@@ -153,7 +88,7 @@ export async function processSvgFile(filePath: string, output: string, options: 
       console.log(`Generated React component ${componentName}.tsx`);
     } else {
       // 默认优化SVG文件
-      const result = optimize(svgContent, config as any);
+      const result = optimize(svgContent,config?.svgo as any);
       const optimizedSize = Buffer.byteLength(result.data, 'utf-8');
       const outputFilePath = getOutputFilePath(outputPath, fileName, '.svg');
       fs.writeFileSync(outputFilePath, result.data, 'utf-8');

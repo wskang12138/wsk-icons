@@ -1,32 +1,77 @@
 {
+    "svgo": {
+        "js2svg": {
+            "indent": 2,
+            "pretty": true
+        },
+        "plugins": [
+            {
+                "name": "preset-default",
+                "params": {
+                    "overrides": {
+                        "removeViewBox": false,
+                        "inlineStyles": {
+                            "onlyMatchedOnce": false
+                        }
+                    }
+                }
+            },
+            {
+                "name": "convertStyleToAttrs",
+                "params": {
+                    "onlyMatchedOnce": false
+                }
+            },
+            {
+                "name": "removeAttrs",
+                "params": {
+                    "attrs": [
+                        "svg:style"
+                    ]
+                }
+            },
+            {
+                "name": "addAttributesToSVGElement",
+                "params": {
+                    "attributes": [
+                        {
+                            "width": "1em",
+                            "height": "1em",
+                            "aria-hidden": true,
+                            "focusable": "false"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
     "png": {
-      "quality": 80,
-      "compressionLevel": 9,
-      "adaptiveFiltering": true, 
-      "palette": true,           
-      "dither": 0              
+        "quality": 80,
+        "compressionLevel": 9,
+        "adaptiveFiltering": true,
+        "palette": true,
+        "dither": 0
     },
     "jpg": {
-      "quality": 80,
-      "mozjpeg": true,
-      "progressive": true,      
-      "trellisQuantisation": true 
+        "quality": 80,
+        "mozjpeg": true,
+        "progressive": true,
+        "trellisQuantisation": true
     },
     "jpeg": {
-      "quality": 80,
-      "mozjpeg": true,
-      "progressive": true,
-      "trellisQuantisation": true
+        "quality": 80,
+        "mozjpeg": true,
+        "progressive": true,
+        "trellisQuantisation": true
     },
     "webp": {
-      "quality": 80,
-      "lossless": false,      
-      "alphaQuality": 90       
+        "quality": 80,
+        "lossless": false,
+        "alphaQuality": 90
     },
     "gif": {
-      "optimizeLevel": 3,
-      "colors": 256,          
-      "dither": true            
+        "optimizeLevel": 3,
+        "colors": 256,
+        "dither": true
     }
-  }
-  
+}
