@@ -1,0 +1,32 @@
+{
+    "png": {
+      "quality": 80,
+      "compressionLevel": 9,
+      "adaptiveFiltering": true, 
+      "palette": true,           
+      "dither": 0              
+    },
+    "jpg": {
+      "quality": 80,
+      "mozjpeg": true,
+      "progressive": true,      
+      "trellisQuantisation": true 
+    },
+    "jpeg": {
+      "quality": 80,
+      "mozjpeg": true,
+      "progressive": true,
+      "trellisQuantisation": true
+    },
+    "webp": {
+      "quality": 80,
+      "lossless": false,      
+      "alphaQuality": 90       
+    },
+    "gif": {
+      "optimizeLevel": 3,
+      "colors": 256,          
+      "dither": true            
+    }
+  }
+  

@@ -1,12 +1,12 @@
 {
-  "compilerOptions": {
-    "target": "es2020",          // 使用 es2020 或更高版本
-    "module": "es2020",
+  "compilerOptions": {           // 使用 es2020 或更高版本
+    "module": "ESNext", // 确保使用正确的模块系统
+    "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
     "skipLibCheck": false,
-    "esModuleInterop": false,
+    "esModuleInterop": true,       // 使得导入模块更兼容
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,

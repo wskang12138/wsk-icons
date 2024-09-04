@@ -6,10 +6,10 @@
   "bin": {
     "wsksvg": "./dist/index.js"
   },
-  "type": "module",
   "types": "./dist/index.d.ts",
+  "type": "module",
   "scripts": {
-    "dev":"node ./dist/index.js teacher.svg  --react",
+    "dev":"node ./dist/index.js test.jpg",
     "build": "tsc"
   },
   "dependencies": {

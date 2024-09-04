@@ -3,7 +3,7 @@ import path from 'path';
 import { optimize } from 'svgo';
 import { transform } from '@svgr/core';
 import camelCase from 'camelcase';
-import { ensureDirectoryExists, getOutputFilePath } from "./utils";
+import { ensureDirectoryExists, getOutputFilePath } from "./utils.js";
 import { Buffer } from 'buffer';
 // SVGO 配置
 const svgoConfig = {

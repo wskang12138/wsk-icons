@@ -4,10 +4,10 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fg from 'fast-glob';
-import { displayHelp } from './help';
-import { processImageFile } from './processImageFile';
-import { normalizePath } from './utils';
-import { processSvgFile } from './processSvgFile';
+import { displayHelp } from './help.js';
+import { processImageFile } from './processImageFile.js';
+import { normalizePath } from './utils.js';
+import { processSvgFile } from './processSvgFile.js';
 // 获取 __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
