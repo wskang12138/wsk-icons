@@ -15,7 +15,7 @@ const defaultConfigPath = path.resolve(__dirname, 'wsksvg.json');
 // 加载默认配置
 const defaultConfig = JSON.parse(fs.readFileSync(defaultConfigPath, 'utf-8'));
 // 特定配置文件路径
-const specificConfigPath = path.resolve(__dirname, 'wsksvg.json');
+const specificConfigPath = path.resolve(process.cwd(), 'wsksvg.json');
 let config = { ...defaultConfig };
 // 合并特定配置与默认配置
 const mergeConfig = (defaultConfig, specificConfig) => {

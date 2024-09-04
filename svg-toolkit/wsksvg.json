@@ -1,0 +1,8 @@
+{
+  "svgo": {
+      "js2svg": {
+          "indent": 2,
+          "pretty": false
+      }
+  }
+}
