@@ -15,11 +15,18 @@ const program = new Command();
 // 处理文件逻辑
 async function processFile(filePath, output, options) {
     const extname = path.extname(filePath).toLowerCase();
-    if (extname === '.svg' || extname === '.png' || extname === '.jpg' || extname === '.jpeg') {
+    // 判断是否是支持的图片格式
+    if (['.svg', '.png', '.jpg', '.jpeg', '.gif'].includes(extname)) {
         if (extname === '.svg') {
+            // 处理SVG文件
             await processSvgFile(filePath, output, options);
         }
+        else if (extname === '.gif') {
+            // 处理GIF文件
+            await processImageFile(filePath, output);
+        }
         else {
+            // 处理其他图片格式（PNG, JPG, JPEG）
             await processImageFile(filePath, output);
         }
     }
@@ -44,7 +51,7 @@ async function handleSvgToolkit(input, output = '', options) {
             }
             if (stats.isDirectory()) {
                 // 处理目录下的所有匹配文件
-                const files = await fg(`${originalInput}/**/*.{svg,png,jpg,jpeg}`, { onlyFiles: true, dot: true });
+                const files = await fg(`${originalInput}/**/*.{svg,png,jpg,jpeg,gif}`, { onlyFiles: true, dot: true });
                 if (files.length === 0) {
                     throw new Error(`No files found in directory ${originalInput}`);
                 }
@@ -81,6 +88,7 @@ program
     .argument('[output]', 'Output directory or file', '')
     .option('--vue', 'Generate Vue components from SVG files')
     .option('--react', 'Generate React components from SVG files')
+    .option('--base', 'Convert SVG files to Base64 encoded data')
     .action(async (input, output, options) => {
     if (options.help) {
         displayHelp();

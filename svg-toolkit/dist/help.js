@@ -11,6 +11,7 @@ export const displayHelp = () => {
   Options:
     --vue           Generate Vue components from SVG files.
     --react         Generate React components from SVG files.
+    --base          Convert SVG files to Base64 encoded data.
     -h, --help      Display this help message.
   
   Examples:
@@ -18,6 +19,7 @@ export const displayHelp = () => {
     wsksvg ./rawSvg ./testVue
     wsksvg ./rawSvg ./testVue --vue
     wsksvg ./rawSvg ./testReact --react
+    wsksvg ./rawSvg ./base64Output --base
     wsksvg ./rawImages ./optimizedImages
     `);
 };

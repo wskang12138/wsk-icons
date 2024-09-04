@@ -15,12 +15,19 @@ const __dirname = path.dirname(__filename);
 const program = new Command();
 
 // 处理文件逻辑
-async function processFile(filePath: string, output: string, options: { vue: any; react: any; }) {
+async function processFile(filePath: string, output: string, options: { vue: any; react: any; base: boolean; }) {
   const extname = path.extname(filePath).toLowerCase();
-  if (extname === '.svg' || extname === '.png' || extname === '.jpg' || extname === '.jpeg') {
+
+  // 判断是否是支持的图片格式
+  if (['.svg', '.png', '.jpg', '.jpeg', '.gif'].includes(extname)) {
     if (extname === '.svg') {
+      // 处理SVG文件
       await processSvgFile(filePath, output, options);
+    } else if (extname === '.gif') {
+      // 处理GIF文件
+      await processImageFile(filePath, output);
     } else {
+      // 处理其他图片格式（PNG, JPG, JPEG）
       await processImageFile(filePath, output);
     }
   } else {
@@ -30,7 +37,7 @@ async function processFile(filePath: string, output: string, options: { vue: any
 }
 
 // 处理输入路径
-async function handleSvgToolkit(input: string, output = '', options: { vue: any; react: any; }) {
+async function handleSvgToolkit(input: string, output = '', options: { vue: any; react: any; base: boolean; }) {
   const originalInput = normalizePath(path.resolve(process.cwd(), input));
   const resolvedOutput = output ? normalizePath(path.resolve(process.cwd(), output)) : '';
 
@@ -49,7 +56,7 @@ async function handleSvgToolkit(input: string, output = '', options: { vue: any;
 
       if (stats.isDirectory()) {
         // 处理目录下的所有匹配文件
-        const files = await fg(`${originalInput}/**/*.{svg,png,jpg,jpeg}`, { onlyFiles: true, dot: true });
+        const files = await fg(`${originalInput}/**/*.{svg,png,jpg,jpeg,gif}`, { onlyFiles: true, dot: true });
         if (files.length === 0) {
           throw new Error(`No files found in directory ${originalInput}`);
         }
@@ -83,6 +90,7 @@ async function handleSvgToolkit(input: string, output = '', options: { vue: any;
   }
 }
 
+
 // 定义默认命令
 program
   .description('Toolkit for optimizing SVG and other image files, and generating components')
@@ -90,6 +98,7 @@ program
   .argument('[output]', 'Output directory or file', '')
   .option('--vue', 'Generate Vue components from SVG files')
   .option('--react', 'Generate React components from SVG files')
+  .option('--base', 'Convert SVG files to Base64 encoded data')
   .action(async (input, output, options) => {
     if (options.help) {
       displayHelp();
@@ -102,6 +111,7 @@ program
       await handleSvgToolkit(input, output, options);
     }
   });
+
 
 // 显示默认帮助信息
 program.on('--help', () => {

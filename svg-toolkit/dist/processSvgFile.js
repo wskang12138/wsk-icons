@@ -4,6 +4,7 @@ import { optimize } from 'svgo';
 import { transform } from '@svgr/core';
 import camelCase from 'camelcase';
 import { ensureDirectoryExists, getOutputFilePath } from "./utils";
+import { Buffer } from 'buffer';
 // SVGO 配置
 const svgoConfig = {
     js2svg: {
@@ -96,10 +97,21 @@ export async function processSvgFile(filePath, output, options) {
     const originalSize = Buffer.byteLength(svgContent, 'utf-8');
     // 选择优化配置
     let config = svgoConfig;
+    // 生成输出路径
     const outputPath = output ? path.resolve(process.cwd(), output) : fileDir;
     ensureDirectoryExists(outputPath);
-    if (options.vue) {
-        // 生成 Vue 组件
+    if (options.base) {
+        // 转换为Base64并保存到文件
+        const base64Data = Buffer.from(svgContent).toString('base64');
+        const base64FileContent = `data:image/svg+xml;base64,${base64Data}`;
+        const outputFilePath = getOutputFilePath(outputPath, fileName, '.txt'); // 保存为.txt文件
+        fs.writeFileSync(outputFilePath, base64FileContent, 'utf-8');
+        console.log(`Generated Base64 file ${path.basename(outputFilePath)}`);
+        console.log(`Original Size: ${originalSize} bytes`);
+        console.log(`Base64 Size: ${Buffer.byteLength(base64FileContent, 'utf-8')} bytes`);
+    }
+    else if (options.vue) {
+        // 生成Vue组件
         const componentName = camelCase(fileName, { pascalCase: true });
         const result = optimize(svgContent, svgoComConfig);
         const vueCode = `
@@ -124,7 +136,7 @@ export async function processSvgFile(filePath, output, options) {
         console.log(`Generated Vue component ${componentName}.vue`);
     }
     else if (options.react) {
-        // 生成 React 组件
+        // 生成React组件
         const componentName = camelCase(fileName, { pascalCase: true });
         const result = optimize(svgContent, svgoComConfig);
         const jsxCode = await transform(result.data, {
@@ -137,7 +149,7 @@ export async function processSvgFile(filePath, output, options) {
         console.log(`Generated React component ${componentName}.tsx`);
     }
     else {
-        // 默认优化 SVG 文件
+        // 默认优化SVG文件
         const result = optimize(svgContent, config);
         const optimizedSize = Buffer.byteLength(result.data, 'utf-8');
         const outputFilePath = getOutputFilePath(outputPath, fileName, '.svg');
