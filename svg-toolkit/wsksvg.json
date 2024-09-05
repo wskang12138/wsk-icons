@@ -1,8 +1,44 @@
 {
   "svgo": {
-      "js2svg": {
-          "indent": 2,
-          "pretty": false
-      }
+      "plugins": [
+          {
+              "name": "preset-default",
+              "params": {
+                  "overrides": {
+                      "removeViewBox": false,
+                      "inlineStyles": {
+                          "onlyMatchedOnce": false
+                      }
+                  }
+              }
+          },
+          {
+              "name": "convertStyleToAttrs",
+              "params": {
+                  "onlyMatchedOnce": false
+              }
+          },
+          {
+              "name": "removeAttrs",
+              "params": {
+                  "attrs": [
+                      "svg:style"
+                  ]
+              }
+          },
+          {
+              "name": "addAttributesToSVGElement",
+              "params": {
+                  "attributes": [
+                      {
+                          "width": "1em",
+                          "height": "1em",
+                          "aria-hidden": true,
+                          "focusable": "false"
+                      }
+                  ]
+              }
+          }
+      ]
   }
 }

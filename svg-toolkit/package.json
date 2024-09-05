@@ -9,7 +9,7 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "dev":"node ./dist/index.js test.jpg",
+    "dev":"node ./dist/index.js teacher.svg --base",
     "build": "tsc"
   },
   "dependencies": {

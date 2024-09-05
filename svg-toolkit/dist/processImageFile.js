@@ -26,7 +26,6 @@ if (fs.existsSync(specificConfigPath)) {
     const specificConfig = JSON.parse(fs.readFileSync(specificConfigPath, 'utf-8'));
     config = mergeConfig(defaultConfig, specificConfig);
 }
-console.log(config,456)
 // 使用 gifsicle 优化 GIF 图像
 async function optimizeGifWithGifsicle(inputPath, outputPath) {
     try {

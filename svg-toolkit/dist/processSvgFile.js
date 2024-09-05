@@ -26,6 +26,7 @@ if (fs.existsSync(specificConfigPath)) {
     const specificConfig = JSON.parse(fs.readFileSync(specificConfigPath, 'utf-8'));
     config = mergeConfig(defaultConfig, specificConfig);
 }
+console.log(config,123)
 export async function processSvgFile(filePath, output, options) {
     const svgContent = fs.readFileSync(filePath, 'utf-8');
     const fileName = path.basename(filePath, '.svg');
