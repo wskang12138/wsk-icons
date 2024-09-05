@@ -6,7 +6,7 @@
 
 This plugin is mainly used for optimizing SVG, PNG, and JPG images. 
 If it is SVG, it can be converted into corresponding components through instructions, 
-such as React and Vue components
+such as React and Vue components, Base64 encoded data. 
 
 ```
 
