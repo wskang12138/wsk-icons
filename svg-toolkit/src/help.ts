@@ -12,6 +12,7 @@ export const displayHelp = () => {
     --vue           Generate Vue components from SVG files.
     --react         Generate React components from SVG files.
     --base          Convert SVG files to Base64 encoded data.
+    --format <format>  Convert SVG files to specified format (png, jpg, webp, gif,tiff,bmp).
     -h, --help      Display this help message.
   
   Examples:
@@ -20,6 +21,7 @@ export const displayHelp = () => {
     wsksvg ./rawSvg ./testVue --vue
     wsksvg ./rawSvg ./testReact --react
     wsksvg ./rawSvg ./base64Output --base
+    wsksvg ./rawSvg ./outputImage --format png
     wsksvg ./rawImages ./optimizedImages
     `);
   };

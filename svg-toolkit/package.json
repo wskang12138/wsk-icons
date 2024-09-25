@@ -1,6 +1,6 @@
 {
   "name": "wsksvg",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A toolkit for optimizing SVG and generating components",
   "main": "./dist/index.js",
   "bin": {
@@ -9,7 +9,7 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "dev":"node ./dist/index.js teacher.svg --base",
+    "dev": "node ./dist/index.js test.svg ",
     "build": "tsc"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "@svgr/plugin-jsx": "^8.1.0",
     "@svgr/plugin-prettier": "^8.1.0",
     "@types/node": "^22.5.1",
+    "cli-progress": "^3.12.0",
     "commander": "^8.3.0",
     "fast-glob": "^3.3.2",
     "glob": "^11.0.0",
