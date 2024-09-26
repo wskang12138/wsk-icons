@@ -6,7 +6,8 @@
 
 This plugin is mainly used to optimize SVG, PNG, JPG, and GIF images.
 If it is SVG, it can be converted into corresponding components through instructions,
-For example, React and Vue components, Base64 encoded data, can also be converted into images in other formats.
+For example, React and Vue components, 
+Base64 encoded data, can also be converted into images in other formats.
 
 ```
 
@@ -22,7 +23,8 @@ Usage:
 
 Commands:
   <input>         The path to the SVG file or directory containing SVG files.
-  [output]        The path to the output directory or file. If not specified, the output will be in the same directory with a ".copy" suffix.
+  [output]        The path to the output directory or file. If not specified,
+                  the output will be in the same directory with a ".copy" suffix.
 
   Options:
     --vue           Generate Vue components from SVG files.
