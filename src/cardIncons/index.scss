@@ -1,0 +1,79 @@
+.card-incons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &:hover{
+        cursor: pointer;
+    }
+}
+
+.modal-conent {
+    display: flex;
+    background-color: #FAFAFA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .incon-info {
+        padding: 20px;
+
+        .oneColor {
+            margin-top: 15px;
+        }
+
+        .incon {
+            width: 434px;
+            height: 270px;
+            line-height: 270px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .color-select {
+            .fist-color {
+                display: flex;
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+
+            .color-card {
+                width: 29px;
+                height: 28px;
+            }
+        }
+
+        .select-info {
+            height: 32px;
+            display: flex;
+            margin-top: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+
+    .tbackground {
+        background-position: 0 0, 5px 5px !important;
+        background-size: 10px 10px !important;
+        background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%), linear-gradient(45deg, #eee 25%, #fff 25%, #fff 75%, #eee 75%, #eee 100%) !important;
+    }
+
+    .ant-color-picker-trigger {
+        flex-direction: row-reverse;
+    }
+
+}
+.modal-foot {
+  padding-left:10%;
+  padding-right: 10%;
+  padding-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e8e8e8;
+}

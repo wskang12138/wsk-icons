@@ -33,19 +33,17 @@
     "deploy": "vite build --config vite.deploy.ts",
     "preview": "vite preview --config vite.deploy.ts",
     "lib": "vite build --config vite.lib.ts",
-    "release": "standard-version",
-    "wsksvg": "node ./lib/index.js ./rawSvg",
-    "wsksvg:vue": " node ./lib/index.js  ./rawSvg ./testVue",
-    "wsksvg:react": "node ./scripts/build-svg-react.js",
-    "wsksvg:help": "node ./lib/index.js --help"
+    "release": "standard-version"
   },
   "dependencies": {
     "@svgr/plugin-jsx": "^8.1.0",
+    "antd": "^5.22.1",
     "commander": "^8.3.0",
     "fast-glob": "^3.3.2",
     "glob": "^11.0.0",
-    "sharp": "^0.33.5",
-    "wsksvg": "^0.1.1"
+    "html-to-image": "^1.11.11",
+    "prismjs": "^1.29.0",
+    "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@svgr/core": "^8.1.0",

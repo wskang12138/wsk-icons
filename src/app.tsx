@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import * as allIcons from './ReactIcons'
 import './app.scss'
 import { version } from '../package.json'
+import CardIncons from './cardIncons'
 
 export default function App() {
   const alliconList = useMemo(() => Object.keys(allIcons), [])
@@ -33,7 +34,7 @@ export default function App() {
     <div className='container'>
       <header className='header'>
         <div className='settings'>
-          <a href="http://192.168.129.172:4873/-/web/detail/wsk-icons" rel="nofollow" style={{ fontSize: 0 }}>
+          <a href="/-/web/detail/wsk-icons" rel="nofollow" style={{ fontSize: 0 }}>
             <img
               src={`https://img.shields.io/badge/npm-${version}-brightgreen`}
               alt="NPM version"
@@ -63,10 +64,10 @@ export default function App() {
             outlinedIconList.map((iconName) => {
               const Component = (allIcons as any)[iconName]
               return (
-                <div key={iconName} className='card'>
-                  <Component style={{ fontSize: size }} color={color} />
-                  <span>{iconName}</span>
-                </div>
+                  <CardIncons title={iconName} incon={Component}>
+                     <Component style={{ fontSize: size }} color={color} />
+                     <span className='incon-name'>{iconName}</span>
+                  </CardIncons>
               )
             })
           }

@@ -1,4 +1,4 @@
-@import './mixin.scss';
+@use './mixin' as *;
 
 html {
   @include webkit-scrollbar;
@@ -41,6 +41,10 @@ main {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 20px;
+}
+.incon-name{
+  font-size: 12px;
+  margin-top: 8px;
 }
 
 .card {
