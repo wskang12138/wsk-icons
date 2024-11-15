@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import fs from 'fs';
-import path from 'path';
+import path, { resolve } from 'path';
 import { fileURLToPath } from 'url';
 import fg from 'fast-glob';
 import { Worker } from 'worker_threads';
@@ -57,6 +57,7 @@ async function handleSvgToolkit(
   let failureCount = 0;
   let totalOriginalSize = 0;
   let totalOptimizedSize = 0;
+  let componentNames: string[] = []; // 收集生成的组件名
 
   try {
     const files = await getInputFiles(originalInput);
@@ -73,6 +74,7 @@ async function handleSvgToolkit(
           successCount++;
           let optimizedSize = result?.optimizedSize || 0; // 确保存在优化后的大小
           totalOptimizedSize += optimizedSize;
+          componentNames.push(result?.fileName); // 收集组件名
           updateProgress(successCount, failureCount, files.length);
         })
         .catch((error) => {
@@ -90,7 +92,11 @@ async function handleSvgToolkit(
     }
 
     // 等待最后一批 Promise 完成
-    await Promise.all(processingPromises);
+     await Promise.all(processingPromises);
+    if (options.vue || options.react) {
+      const indexFileContent = componentNames.map((name) => `export { default as ${name} } from './${options.vue?name+'.vue':name}';`).join('\n')
+      fs.writeFileSync(resolve(resolvedOutput, 'index.ts'), indexFileContent, 'utf-8')
+    }
 
     console.log(`\nAll files processed successfully. Success: ${successCount}, Failures: ${failureCount}.`);
     console.log(`Total Original Size: ${totalOriginalSize} bytes`);

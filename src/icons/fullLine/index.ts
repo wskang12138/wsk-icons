@@ -1,0 +1,11 @@
+export { default as FlyFilled } from './FlyFilled';
+export { default as EduSystemFilled } from './EduSystemFilled';
+export { default as EyeInvisibleFilled } from './EyeInvisibleFilled';
+export { default as AccountFilled } from './AccountFilled';
+export { default as CommentFilled } from './CommentFilled';
+export { default as CloseCircleFilled } from './CloseCircleFilled';
+export { default as HelpCircleFilled } from './HelpCircleFilled';
+export { default as HistogramFilled } from './HistogramFilled';
+export { default as HomeFilled } from './HomeFilled';
+export { default as ForwardFilled } from './ForwardFilled';
+export { default as GlassesBeardFilled } from './GlassesBeardFilled';

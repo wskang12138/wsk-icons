@@ -28,7 +28,10 @@ if (fs.existsSync(specificConfigPath)) {
 }
 export async function processSvgFile(filePath, output, options, totalFiles, currentFileIndex) {
     const svgContent = fs.readFileSync(filePath, 'utf-8');
-    const fileName = path.basename(filePath, '.svg');
+    let fileName = path.basename(filePath, '.svg');
+    if (options.vue || options.react) {
+        fileName = camelCase(fileName, { pascalCase: true });
+    }
     const fileDir = path.dirname(filePath);
     // 计算原始文件大小
     const originalSize = Buffer.byteLength(svgContent, 'utf-8');
@@ -63,8 +66,8 @@ svg {
             : await transform(result.data, {
                 plugins: ['@svgr/plugin-jsx', '@svgr/plugin-prettier'],
                 icon: true,
-                typescript: false
-            }, { componentName: camelCase(fileName, { pascalCase: true }) });
+                typescript: true
+            }, { componentName: fileName });
         const outputFilePath = getOutputFilePath(outputPath, fileName, options.vue ? '.vue' : '.tsx');
         fs.writeFileSync(outputFilePath, componentCode, 'utf-8');
         optimizedSize = Buffer.byteLength(result.data, 'utf-8');
@@ -80,5 +83,5 @@ svg {
         const outputFilePath = getOutputFilePath(outputPath, fileName, '.svg');
         fs.writeFileSync(outputFilePath, result.data, 'utf-8');
     }
-    return { originalSize, optimizedSize };
+    return { originalSize, optimizedSize, fileName };
 }

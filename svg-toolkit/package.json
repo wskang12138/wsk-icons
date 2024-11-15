@@ -1,6 +1,6 @@
 {
   "name": "wsksvg",
-  "version": "1.1.2",
+  "version": "1.1.4",
   "description": "A toolkit for optimizing SVG and generating components",
   "main": "./dist/index.js",
   "bin": {
@@ -9,7 +9,7 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "dev": "node ./dist/index.js test.svg ",
+    "dev": "node ./dist/index.js ./fullLine ./intest --react",
     "build": "tsc"
   },
   "dependencies": {

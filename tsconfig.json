@@ -19,5 +19,5 @@
     "outDir": "dist",
     "emitDeclarationOnly": true,
   },
-  "include": ["./src/ReactIncons"]
+  "include": ["./src/icons"]
 }

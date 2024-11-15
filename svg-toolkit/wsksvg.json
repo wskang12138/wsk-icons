@@ -1,44 +1,50 @@
 {
-  "svgo": {
+    "svgo": {
+      "js2svg": {
+        "indent": 2,
+        "pretty": true
+      },
       "plugins": [
-          {
-              "name": "preset-default",
-              "params": {
-                  "overrides": {
-                      "removeViewBox": false,
-                      "inlineStyles": {
-                          "onlyMatchedOnce": false
-                      }
-                  }
+        {
+          "name": "preset-default",
+          "params": {
+            "overrides": {
+              "removeViewBox": false,
+              "inlineStyles": {
+                "onlyMatchedOnce": false
               }
-          },
-          {
-              "name": "convertStyleToAttrs",
-              "params": {
-                  "onlyMatchedOnce": false
-              }
-          },
-          {
-              "name": "removeAttrs",
-              "params": {
-                  "attrs": [
-                      "svg:style"
-                  ]
-              }
-          },
-          {
-              "name": "addAttributesToSVGElement",
-              "params": {
-                  "attributes": [
-                      {
-                          "width": "1em",
-                          "height": "1em",
-                          "aria-hidden": true,
-                          "focusable": "false"
-                      }
-                  ]
-              }
+            }
           }
+        },
+        "removeXMLNS",
+        "convertStyleToAttrs",
+        {
+          "name": "convertColors",
+          "params": {
+            "currentColor": true
+          }
+        },
+        {
+          "name": "removeAttrs",
+          "params": {
+            "attrs": ["opacity", "svg:width", "svg:height"]
+          }
+        },
+        {
+          "name": "addAttributesToSVGElement",
+          "params": {
+            "attributes": [
+              {
+                "fill": "currentColor",
+                "width": "1em",
+                "height": "1em",
+                "aria-hidden": true,
+                "focusable": "false"
+              }
+            ]
+          }
+        }
       ]
+    }
   }
-}
+  

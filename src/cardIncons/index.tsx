@@ -1,4 +1,4 @@
-import { Button, ColorPicker, ColorPickerProps, GetProp, Modal, Select } from 'antd';
+import { Button, ColorPicker, ColorPickerProps, GetProp, Modal, Select, message } from 'antd';
 import './index.scss';
 import React, { ElementType, ReactNode, useRef, useState } from 'react';
 import { InconSize, colorArr, replaceFirstElement } from './utils';
@@ -72,13 +72,19 @@ export default function CardIncons(props: CardInconITem) {
             if (svgElement) {
                 const svgData = new XMLSerializer().serializeToString(svgElement);
                 navigator.clipboard.writeText(svgData)
-                    .then(() => alert('SVG code copied to clipboard'))
+                    .then(() => message.success('复制成功'))
                     .catch((err) => console.error("Copy SVG code failed: ", err));
             } else {
                 console.error('No SVG element found to copy.');
             }
         }
     };
+
+    const copyCode = () =>{
+        navigator.clipboard.writeText(`<${props.title } />`)
+        .then(() => message.success('复制成功'))
+        .catch((err) => console.error("Copy SVG code failed: ", err));
+    }
 
     return (
         <>
@@ -97,6 +103,7 @@ export default function CardIncons(props: CardInconITem) {
                         <Button type="primary" onClick={downloadPng}>PNG下载</Button>
                         <Button type="primary" onClick={downloadJpeg}>JPEG下载</Button>
                         <Button type="primary" onClick={copySvgCode}>复制SVG代码</Button>
+                        <Button type="primary" onClick={copyCode}>复制组件</Button>
                     </div>}
                 >
                     <div className='modal-conent'>

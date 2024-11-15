@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #1da4fe;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="图表-初始" class="cls-1" d="M273,135h2a1,1,0,0,1,1,1v10a1,1,0,0,1-1,1h-2a1,1,0,0,1-1-1V136A1,1,0,0,1,273,135Zm12,4h2a1,1,0,0,1,1,1v6a1,1,0,0,1-1,1h-2a1,1,0,0,1-1-1v-6A1,1,0,0,1,285,139Zm-6-8h2a1,1,0,0,1,1,1v14a1,1,0,0,1-1,1h-2a1,1,0,0,1-1-1V132A1,1,0,0,1,279,131Z" transform="translate(-272 -131)"/>
+</svg>

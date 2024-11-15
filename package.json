@@ -1,20 +1,20 @@
 {
-  "name": "wsk-icons",
+  "name": "wskicons",
   "homepage": "",
   "files": [
     "dist"
   ],
-  "main": "./dist/wsk-icons.umd.js",
-  "module": "./dist/wsk-icons.es.js",
+  "main": "./dist/wskicons.umd.js",
+  "module": "./dist/wskicons.es.js",
   "exports": {
     ".": {
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/wsk-icons.es.js"
+        "default": "./dist/wskicons.es.js"
       },
       "require": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/wsk-icons.umd.js"
+        "default": "./dist/wskicons.umd.js"
       }
     }
   },
@@ -26,9 +26,10 @@
   "scripts": {
     "rollup": "rollup -c",
     "build-svg": "rimraf ./src/optimizedSvg/ && node ./scripts/build-svg.js",
+    "builds": "node ./scripts/build.js",
     "build-svg-react": "rimraf ./src/ReactIcons/ && node ./scripts/build-svg-react.js",
     "build-svg-vue": "rimraf ./src/VueIcons/ && node ./scripts/build-svg-vue.js",
-    "build": "tsc && vite build && npm run rollup",
+    "build": "tsc && vite build --config vite.config.ts && npm run rollup",
     "dev": "vite --config vite.deploy.ts",
     "deploy": "vite build --config vite.deploy.ts",
     "preview": "vite preview --config vite.deploy.ts",
@@ -37,6 +38,7 @@
   },
   "dependencies": {
     "@svgr/plugin-jsx": "^8.1.0",
+    "@vitejs/plugin-legacy": "^5.4.3",
     "antd": "^5.22.1",
     "commander": "^8.3.0",
     "fast-glob": "^3.3.2",

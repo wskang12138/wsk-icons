@@ -10,12 +10,12 @@ interface Options {
     format: any;
 }
 
-async function processFile(filePath: string, output: string, options: Options, totalFiles: number, currentFileIndex: number): Promise<{ originalSize: number; optimizedSize: number }> {
+async function processFile(filePath: string, output: string, options: Options, totalFiles: number, currentFileIndex: number): Promise<{ originalSize: number; optimizedSize: number,fileName?:string }> {
     const extname = path.extname(filePath).toLowerCase();
     if (extname === '.svg') {
         const result:any = await processSvgFile(filePath, output, options, totalFiles, currentFileIndex);
   
-        return { originalSize: result.originalSize, optimizedSize: result.optimizedSize };
+        return { originalSize: result.originalSize, optimizedSize: result.optimizedSize,fileName:result?.fileName };
     } else if (['.png', '.jpg', '.jpeg', '.gif'].includes(extname)) {
         const result:any = await processImageFile(filePath, output, totalFiles, currentFileIndex);
         return { originalSize: result?.originalSize, optimizedSize: result?.optimizedSize || 0 };
@@ -28,10 +28,10 @@ async function processFile(filePath: string, output: string, options: Options, t
 (async () => {
     try {
         const { filePath, output, options, totalFiles, currentFileIndex } = workerData;
-        const { originalSize, optimizedSize } = await processFile(filePath, output, options, totalFiles, currentFileIndex);
+        const { originalSize, optimizedSize,fileName } = await processFile(filePath, output, options, totalFiles, currentFileIndex);
         
         if (parentPort) {
-            parentPort.postMessage({ status: 'done', filePath, originalSize, optimizedSize });
+            parentPort.postMessage({ status: 'done', filePath, originalSize, optimizedSize,fileName });
         } else {
             console.error('Error: parentPort is null');
         }

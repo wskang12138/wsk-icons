@@ -6,7 +6,7 @@ async function processFile(filePath, output, options, totalFiles, currentFileInd
     const extname = path.extname(filePath).toLowerCase();
     if (extname === '.svg') {
         const result = await processSvgFile(filePath, output, options, totalFiles, currentFileIndex);
-        return { originalSize: result.originalSize, optimizedSize: result.optimizedSize };
+        return { originalSize: result.originalSize, optimizedSize: result.optimizedSize, fileName: result?.fileName };
     }
     else if (['.png', '.jpg', '.jpeg', '.gif'].includes(extname)) {
         const result = await processImageFile(filePath, output, totalFiles, currentFileIndex);
@@ -20,9 +20,9 @@ async function processFile(filePath, output, options, totalFiles, currentFileInd
 (async () => {
     try {
         const { filePath, output, options, totalFiles, currentFileIndex } = workerData;
-        const { originalSize, optimizedSize } = await processFile(filePath, output, options, totalFiles, currentFileIndex);
+        const { originalSize, optimizedSize, fileName } = await processFile(filePath, output, options, totalFiles, currentFileIndex);
         if (parentPort) {
-            parentPort.postMessage({ status: 'done', filePath, originalSize, optimizedSize });
+            parentPort.postMessage({ status: 'done', filePath, originalSize, optimizedSize, fileName });
         }
         else {
             console.error('Error: parentPort is null');
