@@ -3,7 +3,7 @@ A React icon library
 
 ## Install
 ```bash
-npm install -g wsksvg
+npm install wskicons
 ```
 ## use
 ```bash
