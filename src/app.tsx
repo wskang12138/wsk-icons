@@ -26,8 +26,8 @@ export default function App() {
               src={`https://img.shields.io/badge/npm-${version}-brightgreen`}
               alt="NPM version"
             />
-             <a target='_blank' href='https://wskang12138.github.io/wsk-icons/'>GitHub</a>
           </a>
+          <a target='_blank' href='https://wskang12138.github.io/wsk-icons/'>GitHub</a>
           <span>搜索图标可使用<kbd>crtl</kbd>+<kbd>f</kbd>
           </span>
           <span>安装使用: npm install wskicons</span>
