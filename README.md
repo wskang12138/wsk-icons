@@ -1,4 +1,18 @@
-# Svg optimization and conversion
+# wskicons
+A React icon library
+
+## Install
+```bash
+npm install -g wsksvg
+```
+## use
+```bash
+import { Account1Outlined } from 'wskicons'
+
+```
+
+
+# svg-toolkit Svg optimization and conversion
 
 ## Introduce
 
